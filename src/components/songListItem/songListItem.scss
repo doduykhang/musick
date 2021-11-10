@@ -1,0 +1,41 @@
+.playlistSong {
+  display: flex;
+  margin-top: 20px;
+  margin-left: 10px;
+  color: white;
+  padding: 5px;
+  &:hover {
+    background-color: grey;
+    opacity: 0.8;
+  }
+  div {
+    display: flex;
+    align-items: center;
+    &.info-wrapper {
+      flex: 4;
+      img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .info {
+        margin-left: 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    &.album {
+      flex: 3;
+    }
+
+    &.date-added {
+      flex: 3;
+    }
+
+    &.duration {
+      flex: 2;
+    }
+  }
+}

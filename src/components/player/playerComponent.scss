@@ -1,0 +1,160 @@
+.player {
+  width: 100%;
+  height: 15%;
+  // background-color: #212121;
+  background-color: var(--main-color);
+  color: white;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+
+  .info-wrapper {
+    flex: 3;
+    display: flex;
+    img {
+      padding: 10px;
+      height: 80px;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: px;
+      .title {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .artist {
+        color: grey;
+      }
+    }
+  }
+
+  .control {
+    flex: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    position: relative;
+
+    .control-wrapper {
+      display: flex;
+      align-items: center;
+      padding-bottom: 5px;
+
+      .icon {
+        font-size: 25px;
+        margin: 0px 5px;
+
+        &.play-icon {
+          &:hover {
+            font-size: 28px;
+          }
+        }
+        &.other-icon {
+          color: grey;
+          &:hover {
+            color: white;
+          }
+        }
+      }
+    }
+
+    .progess {
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      .slider {
+        -webkit-appearance: none; /* Override default CSS styles */
+        appearance: none;
+        width: 100%; /* Full-width */
+        height: 5px; /* Specified height */
+        background: linear-gradient(
+          to right,
+          green 0%,
+          green 0%,
+          #fff 0%,
+          #fff 100%
+        );
+        border-radius: 5px;
+
+        &:hover {
+          &::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Override default look */
+            appearance: none;
+            width: 10px; /* Set a specific slider handle width */
+            height: 10px; /* Slider handle height */
+            background: white; /* Green background */
+            border-radius: 50%;
+            cursor: pointer; /* Cursor on hover */
+          }
+        }
+
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none; /* Override default look */
+          appearance: none;
+          width: 0px; /* Set a specific slider handle width */
+          height: 0px; /* Slider handle height */
+        }
+      }
+
+      .time {
+        font-size: 15px;
+      }
+    }
+  }
+
+  .function {
+    flex: 3;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    padding-right: 5px;
+
+    .icon {
+      font-size: 25px;
+      color: grey;
+      &:hover {
+        color: white;
+      }
+    }
+
+    .slider {
+      -webkit-appearance: none; /* Override default CSS styles */
+      appearance: none;
+      width: 100px; /* Full-width */
+      height: 5px; /* Specified height */
+      background: linear-gradient(
+        to right,
+        green 0%,
+        green 50%,
+        #fff 50%,
+        #fff 100%
+      );
+      border-radius: 5px;
+
+      &:hover {
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none; /* Override default look */
+          appearance: none;
+          width: 10px; /* Set a specific slider handle width */
+          height: 10px; /* Slider handle height */
+          background: white; /* Green background */
+          border-radius: 50%;
+          cursor: pointer; /* Cursor on hover */
+        }
+      }
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        appearance: none;
+        width: 0px; /* Set a specific slider handle width */
+        height: 0px; /* Slider handle height */
+      }
+    }
+  }
+}

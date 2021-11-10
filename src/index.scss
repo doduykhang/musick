@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+  #root {
+    padding: 0;
+    height: 100vh;
+    .link {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+}
+
+:root {
+  --main-color: #212121;
+}
