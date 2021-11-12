@@ -9,6 +9,9 @@ import Home from "./pages/home/Home";
 import Playlist from "./pages/playlist/Playlist";
 import Search from "./pages/search/Search";
 import history from "./history";
+import UploadSong from "./pages/uploadSong/UploadSong";
+import Register from "./pages/register/Register";
+import Login from "./pages/login/Login";
 function App() {
   return (
     <div className="app">
@@ -18,9 +21,15 @@ function App() {
               <Route exact path="/" 
                 element={<Home/>}/>
               <Route exact path="/playlist"
-                element={<Playlist/>}/>
+                element={<UploadSong/>}/>
+              <Route path="/search/"
+                element={<Search/>}/>
               <Route path="/search/:queryp"
                 element={<Search/>}/>
+                <Route path="/register"
+                element={<Register/>}/>
+                <Route path="/login"
+                element={<Login/>}/>
           </Routes>
         </MainFrameComponent>
         

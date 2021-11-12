@@ -6,7 +6,6 @@ import DisplayListComponent from "../../components/displayList/DisplayListCompon
 import DisplayGridComponent from "../../components/displayGrid/DisplayGridComponent"
 import SongListItem from "../../components/songListItem/SongListItem"
 import GridItemComponent from '../../components/girdItem/GridItemComponent'
-// import history from '../../history'
 import {useParams} from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
 

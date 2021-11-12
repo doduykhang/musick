@@ -5,7 +5,8 @@ import {
     Link
   } from "react-router-dom";
 
-const NavbarComponent = () => {
+const NavbarComponent = ({user}) => {
+
     return (
         <div className="wrapper">
 
@@ -22,14 +23,18 @@ const NavbarComponent = () => {
                                     <span>Home</span>
                             </span>
                         </Link>
-                        <span className="option">
-                            <Icons.SearchOutlined/>
-                            <span>Search</span>
-                        </span>
-                        <span className="option">
-                            <Icons.AccessibilityNew/>
-                            <span>Library</span>
-                        </span>
+                        <Link to='/search' className="link">
+                            <span className="option">
+                                <Icons.SearchOutlined/>
+                                <span>Search</span>
+                            </span>
+                        </Link>
+                        {user && 
+                            <span className="option">
+                                <Icons.AccessibilityNew/>
+                                <span>Library</span>
+                            </span>
+                        }
                     </div>
                 </div>
                 <div className="bottom"> 
