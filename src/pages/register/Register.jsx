@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import auth from '../../firebase/auth';
 import { createUserWithEmailAndPassword, sendEmailVerification, signOut, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc, setDoc, getDoc, doc } from "firebase/firestore"; 
+import  { Navigate } from 'react-router-dom'
 import firestore from '../../firebase/firestore';
 import './register.scss';
 import {MusicNote} from '@material-ui/icons';
 
-const Register = () => {
+const Register = ({user}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [profileName, setProfileName] = useState('');
@@ -19,7 +20,7 @@ const Register = () => {
         e.preventDefault()
         createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            const user = userCredential.user;
+            console.log(userCredential.user) 
             addDoc(collection(firestore,'user'),{
                 profileName: profileName,
                 dateOfBirth: dateOfBirth,
@@ -27,7 +28,7 @@ const Register = () => {
             }).then(()=>{
                 sendEmailVerification(auth.currentUser)
                 .then(() => {
-                    const user = userCredential.user;
+                    // const user = userCredential.user;
                     signOut(auth).then(()=>{
                         setMessage('Please verify your email')
                     })
@@ -48,18 +49,23 @@ const Register = () => {
         });
     }
 
-    const signUpWithGoole = () =>{
+    const signUpWithGoole =  () =>{
         const provider = new GoogleAuthProvider();
         signInWithPopup(auth, provider)
-        .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
+        .then(async (result) => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
-            // The signed-in user info.
             const user = result.user;
-            // ...
-            console.log('success')
-            console.log(user)
+            const checkUser = await getDoc(doc(firestore, "users", user.uid));
+            
+            if(!checkUser.exists()) {
+                console.log('checkUser')
+                setDoc(doc(firestore,'users',user.uid),{
+                    display_name: user.displayName,
+                    date_of_birth: null,
+                    gender: null
+                })
+            }
         }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;
@@ -72,7 +78,8 @@ const Register = () => {
             console.log('fail')
         });
     }
-
+    if(user)
+        return <Navigate to='/'/>
     return (
         <div className='register'>
             <div className='logo'>

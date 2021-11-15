@@ -39,7 +39,7 @@ const TopBar = ({user}) => {
 
     useEffect(() => {
         const storage = getStorage();
-        getDownloadURL(ref(storage, 'profile_picture/default_profile_picture.png'))
+        getDownloadURL(ref(storage, 'images/default_profile_picture.png'))
         .then((url) => {
             setAvatar(url);
         })

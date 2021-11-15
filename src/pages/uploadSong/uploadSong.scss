@@ -1,0 +1,52 @@
+.upload-song {
+  display: flex;
+  color: white;
+  .img-choose {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+    align-items: center;
+    img {
+      width: 96px;
+      height: 96px;
+    }
+    button {
+      font-size: 12px;
+      width: 96px;
+    }
+  }
+  form {
+    .input {
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 10px;
+    }
+
+    .progess {
+      -webkit-appearance: none; /* Override default CSS styles */
+      appearance: none;
+      width: 100%; /* Full-width */
+      height: 5px; /* Specified height */
+      background: linear-gradient(
+        to right,
+        green 0%,
+        green 50%,
+        #fff 50%,
+        #fff 100%
+      );
+      border-radius: 5px;
+
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        appearance: none;
+        width: 0px; /* Set a specific slider handle width */
+        height: 0px; /* Slider handle height */
+      }
+    }
+
+    .time {
+      font-size: 15px;
+    }
+  }
+}

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import "./playerComponent.scss"
 import * as Icons from '@material-ui/icons'
 import RangeSlider from 'react-bootstrap-range-slider';
 import { isElementOfType } from 'react-dom/test-utils';
+import { SongContext } from '../../App';
 const imgUrl = "https://i.scdn.co/image/ab67616d00004851385ac348a7d7906a6cd9f0d7";
-const mp3Url = "https://docs.google.com/uc?export=download&id=1hI050DRu3K6hxd0mIgfPlLKYpBlKI70z";
+const mp3Url = "https://firebasestorage.googleapis.com/v0/b/musick-1f41a.appspot.com/o/songs%2F01.%20R%E3%83%BBI%E3%83%BBO%E3%83%BBT.mp3Mon%20Nov%2015%202021%2014%3A08%3A38%20GMT%2B0700%20(Indochina%20Time)?alt=media&token=282f5fb8-68fd-4e95-b539-80526fe4a82e";
 
 const PlayerComponent = () => {
     const audioRef = useRef();
@@ -19,6 +20,8 @@ const PlayerComponent = () => {
 
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0)
+
+    const currentSong = useContext(SongContext);
 
     useEffect(() => {
         sliderRef.current.style.background = 'linear-gradient'+'('
@@ -101,7 +104,7 @@ const PlayerComponent = () => {
 
     return (
         <div className="player" >
-            <audio src={mp3Url} 
+            <audio src={currentSong.currentSong.audioUrl} 
                 ref={audioRef}
                 onLoadedMetadata={handleLoadMetadata}
                 onTimeUpdate={handleTimeUpdate}
@@ -112,10 +115,10 @@ const PlayerComponent = () => {
                 
             
             <div className="info-wrapper">
-                <img src={imgUrl} alt="" />
+                <img src={currentSong.currentSong.imageUrl} alt="" />
                 <div className="info">
-                    <span className="title">title</span>
-                    <span className="artist">artist</span>
+                    <span className="title">{currentSong.currentSong.title}</span>
+                    <span className="artist">{currentSong.currentSong.uploader}</span>
                 </div>
             </div>
             <div className="control">

@@ -9,7 +9,7 @@ import GridItemComponent from '../../components/girdItem/GridItemComponent'
 import {useParams} from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
 
-const Search = (props) => {
+const Search = ({result}) => {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
@@ -21,7 +21,7 @@ const Search = (props) => {
     }, [])
 
     const handleSearch = (e) =>{
-        navigate(`/search/`+e.target.value)
+        //navigate(`/search/`+e.target.value)
         setQuery(e.target.value);
         setPage(1);
     }
@@ -65,54 +65,59 @@ const Search = (props) => {
                 <Icons.SearchOutlined className="icon"/>
                 <input type="text" value={query} onChange={handleSearch}/>
             </div>
-            <div className="type">Songs</div>
-            <div className="songs-wrapper">
-                <DisplayListComponent header={header}>
-                    {songs.map(song =>{
-                        return (<SongListItem key={song.id} song={song}/>)
-                    })}
-                </DisplayListComponent>
-            </div>
-            <div className="type">Playlists</div>
-            <div className="playlist-wrapper">
-                <DisplayGridComponent>
-                    <div className="with-play-button">
-                        <GridItemComponent type='playlist'/>
-                        <Icons.PlayCircleFilled className="icon"/>
-                    </div>
-                    <div className="with-play-button">
-                        <GridItemComponent type='playlist'/>
-                        <Icons.PlayCircleFilled className="icon"/>
-                    </div>
-                </DisplayGridComponent>
-            </div> 
-            <div className="type">Albums</div>
-            <div className="album-wrapper">
-                <DisplayGridComponent>
-                    <div className="with-play-button">
-                        <GridItemComponent type='album'/>
-                        <Icons.PlayCircleFilled className="icon"/>
-                    </div>
-                    <div className="with-play-button">
-                        <GridItemComponent type='album'/>
-                        <Icons.PlayCircleFilled className="icon"/>
-                    </div>
-                </DisplayGridComponent>
-            </div> 
-            <div className="type">Artists</div>
-            <div className="artist-wrapper">
-                <DisplayGridComponent>
-                    <GridItemComponent type='artist' border='50%'/>
-                    <GridItemComponent type='artist' border='50%'/>
-                </DisplayGridComponent>
-            </div> 
-            <div className="type">Profile</div>
-            <div className="profile-wrapper">
-                <DisplayGridComponent>
-                    <GridItemComponent type='profile' border='50%'/>
-                    <GridItemComponent type='profile' border='50%'/>
-                </DisplayGridComponent>
-            </div> 
+            {result && (
+                <>
+                    <div className="type">Songs</div>
+                    <div className="songs-wrapper">
+                    <DisplayListComponent header={header}>
+                        {songs.map(song =>{
+                            return (<SongListItem key={song.id} song={song}/>)
+                        })}
+                    </DisplayListComponent>
+                </div>
+                <div className="type">Playlists</div>
+                <div className="playlist-wrapper">
+                    <DisplayGridComponent>
+                        <div className="with-play-button">
+                            <GridItemComponent type='playlist'/>
+                            <Icons.PlayCircleFilled className="icon"/>
+                        </div>
+                        <div className="with-play-button">
+                            <GridItemComponent type='playlist'/>
+                            <Icons.PlayCircleFilled className="icon"/>
+                        </div>
+                    </DisplayGridComponent>
+                </div> 
+                <div className="type">Albums</div>
+                <div className="album-wrapper">
+                    <DisplayGridComponent>
+                        <div className="with-play-button">
+                            <GridItemComponent type='album'/>
+                            <Icons.PlayCircleFilled className="icon"/>
+                        </div>
+                        <div className="with-play-button">
+                            <GridItemComponent type='album'/>
+                            <Icons.PlayCircleFilled className="icon"/>
+                        </div>
+                    </DisplayGridComponent>
+                </div> 
+                <div className="type">Artists</div>
+                <div className="artist-wrapper">
+                    <DisplayGridComponent>
+                        <GridItemComponent type='artist' border='50%'/>
+                        <GridItemComponent type='artist' border='50%'/>
+                    </DisplayGridComponent>
+                </div> 
+                <div className="type">Profile</div>
+                <div className="profile-wrapper">
+                    <DisplayGridComponent>
+                        <GridItemComponent type='profile' border='50%'/>
+                        <GridItemComponent type='profile' border='50%'/>
+                    </DisplayGridComponent>
+                </div> 
+                </>
+            )
+            }
         </div>
     )
 }

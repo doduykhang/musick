@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import auth from '../../firebase/auth';
 import { signInWithEmailAndPassword,signOut } from "firebase/auth";
+import  { Navigate } from 'react-router-dom'
 import './login.scss';
 
 const Login = () => {
@@ -35,6 +36,9 @@ const Login = () => {
     const loginWithGoole = () =>{
 
     }
+
+    if(user)
+        return <Navigate to='/'/>
 
     return (
         <div className='login'>
