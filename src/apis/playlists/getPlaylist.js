@@ -7,7 +7,7 @@ const getPlaylist = async (id) =>{
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        return docSnap.data();
+        return {id:docSnap.id,...docSnap.data()};
     } else {
         return null;
     }

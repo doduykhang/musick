@@ -4,7 +4,7 @@ import firestore from "../../firebase/firestore";
 
 const getUserPlaylists = async (uid) =>{
     // const docRef = doc(firestore, "songs");
-    const q = query(collection(firestore,"playlists"), where("uid","==",uid));
+    const q = query(collection(firestore,"playlists"), where("uploader.uid","==",uid));
     const querySnapshot = await getDocs(q);
     console.log(querySnapshot);
     const result = [];

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./search.scss"
 import * as Icons from '@material-ui/icons'
 import useSongsSearch from '../../hooks/useSongsSearch'
@@ -8,22 +8,43 @@ import SongListItem from "../../components/songListItem/SongListItem"
 import GridItemComponent from '../../components/girdItem/GridItemComponent'
 import {useParams} from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
+import usePlaylistsSearch from '../../hooks/usePlaylistSearch'
 
 const Search = ({result}) => {
     const [query, setQuery] = useState('');
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(5);
+    const [songPage, setSongPage] = useState(1);
+    const [playlistPage, setPlaylistPage] = useState(1);
+    const [lastSongId, setLastSongId] = useState('');
+    const [lastPlaylistId, setLastPlaylistId] = useState('')
+    const [tempQuery, setTempQuery] = useState('')
     let {queryp} = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        setQuery(queryp);
-    }, [])
+    const {
+        songs,
+        hasMoreSong
+    } = useSongsSearch(query,songPage,lastSongId);
+
+    const {
+        playlists,
+        hasMorePlaylist
+    } = usePlaylistsSearch(query,playlistPage,lastPlaylistId);
 
     const handleSearch = (e) =>{
-        //navigate(`/search/`+e.target.value)
-        setQuery(e.target.value);
-        setPage(1);
+        if (e.key === 'Enter') {
+            console.log('key enter')
+            setQuery(tempQuery)
+            setSongPage(1);
+            setPlaylistPage(1);
+            setLastSongId('');
+            setLastPlaylistId('');
+
+            navigate('../search/'+tempQuery);
+        }else{
+            setTempQuery(e.target.value);
+        }
+        
+        
     }
 
     const header = [
@@ -45,31 +66,46 @@ const Search = ({result}) => {
         }
     ]
 
-    const {
-        songs,
-        hasError,
-        hasMore,
-        loading
-    } = useSongsSearch(query,page,pageSize);
+    useEffect(() => {
+        if(queryp){
+            setQuery(queryp);
+            setTempQuery(queryp)
+        }    
+    }, [])
+
+    useEffect(() => {
+        if(songs.length !== 0)
+            setLastSongId(songs[songs.length-1].id);
+    }, [songs])
+
+    useEffect(() => {
+        if(playlists.length !== 0)
+            setLastPlaylistId(playlists[playlists.length-1].id);
+    }, [playlists])
 
     const handleScrollToEnd = () =>{
-        console.log("end")
-        if(hasMore)
-            setPage(prevPage => prevPage+1);
+        // console.log("end")
+        if(hasMoreSong)
+            setSongPage(prevPage => prevPage+1);
     }
-    
+
+    const handleScrollToEndPlaylist = () =>{
+        // console.log("end")
+        if(hasMorePlaylist)
+            setPlaylistPage(prevPage => prevPage+1);
+    }
 
     return (
         <div className="search-wrapper">
             <div className="search-box">
                 <Icons.SearchOutlined className="icon"/>
-                <input type="text" value={query} onChange={handleSearch}/>
+                <input type="text" value={tempQuery} onKeyDown={handleSearch} onChange={(e)=>{setTempQuery(e.target.value)}}/>
             </div>
             {result && (
                 <>
-                    <div className="type">Songs</div>
-                    <div className="songs-wrapper">
-                    <DisplayListComponent header={header}>
+                <div className="type">Songs</div>
+                <div className="">
+                    <DisplayListComponent header={header} onScrollToBottom={handleScrollToEnd}>
                         {songs.map(song =>{
                             return (<SongListItem key={song.id} song={song}/>)
                         })}
@@ -77,42 +113,15 @@ const Search = ({result}) => {
                 </div>
                 <div className="type">Playlists</div>
                 <div className="playlist-wrapper">
-                    <DisplayGridComponent>
-                        <div className="with-play-button">
-                            <GridItemComponent type='playlist'/>
-                            <Icons.PlayCircleFilled className="icon"/>
-                        </div>
-                        <div className="with-play-button">
-                            <GridItemComponent type='playlist'/>
-                            <Icons.PlayCircleFilled className="icon"/>
-                        </div>
-                    </DisplayGridComponent>
-                </div> 
-                <div className="type">Albums</div>
-                <div className="album-wrapper">
-                    <DisplayGridComponent>
-                        <div className="with-play-button">
-                            <GridItemComponent type='album'/>
-                            <Icons.PlayCircleFilled className="icon"/>
-                        </div>
-                        <div className="with-play-button">
-                            <GridItemComponent type='album'/>
-                            <Icons.PlayCircleFilled className="icon"/>
-                        </div>
-                    </DisplayGridComponent>
-                </div> 
-                <div className="type">Artists</div>
-                <div className="artist-wrapper">
-                    <DisplayGridComponent>
-                        <GridItemComponent type='artist' border='50%'/>
-                        <GridItemComponent type='artist' border='50%'/>
-                    </DisplayGridComponent>
-                </div> 
-                <div className="type">Profile</div>
-                <div className="profile-wrapper">
-                    <DisplayGridComponent>
-                        <GridItemComponent type='profile' border='50%'/>
-                        <GridItemComponent type='profile' border='50%'/>
+                    <DisplayGridComponent onScrollToBottom={handleScrollToEndPlaylist}>
+                        {playlists.map((playlist)=>{
+                            return(
+                                <div className="with-play-button">
+                                    <GridItemComponent type='playlist' playlist={playlist}/>
+                                    <Icons.PlayCircleFilled className="icon"/>
+                                </div>
+                            )
+                        })}
                     </DisplayGridComponent>
                 </div> 
                 </>

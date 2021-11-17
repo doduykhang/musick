@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import * as Icons from '@material-ui/icons'
 import './gridItemComponent.scss'
-const imgUrl = "https://i.scdn.co/image/ab67706f00000002c9f71ed97ed8a033d67df52a"
 
-const GridItemComponent = ({type,border}) => {
+const GridItemComponent = ({type,border,playlist}) => {
 
     const [desc, setDesc] = useState('');
 
@@ -12,7 +11,7 @@ const GridItemComponent = ({type,border}) => {
         type === 'album' ? 
         _desc = 'Miku, More More Jump':
         type === 'playlist'?
-        _desc ='by Miku':
+        _desc ='by ' + playlist.uploader.name:
         _desc = type
         setDesc(_desc)
     }, [])
@@ -20,10 +19,10 @@ const GridItemComponent = ({type,border}) => {
     return (
         <div className="grid-item">
             <div className="wrapper">
-                <img src={imgUrl} style={{borderRadius:border}}/>
+                <img src={playlist.img_url} style={{borderRadius:border}}/>
                 <div className="info">
                     <div className="title">
-                        Today's top hit
+                        {playlist.name}
                     </div>
                     <div className="desc">
                         {desc}

@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import firestore from '../../firebase/firestore';
 import { collection, addDoc, getDoc, doc } from "firebase/firestore"; 
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { UserContext } from '../../App';
 import './uploadSong.scss'
 
 
 
-const UploadSong = ({user}) => {
+const UploadSong = () => {
     const [name, setName] = useState('')
     const [audioFile, setAudioFile] = useState();
     const [imgFile, setImgFile] = useState()
@@ -14,9 +15,9 @@ const UploadSong = ({user}) => {
     const [audioSrc, setAudioSrc] = useState('')
     const [imgSrc, setImgSrc] = useState('')
     const [genre, setGenre] = useState('Rock');
-    const [uploadProgess, setUploadProgess] = useState(50);
+    const [uploadProgess, setUploadProgess] = useState(0);
     const progessRef = useRef();
-
+    const userContext = useContext(UserContext);
     const uploadSong = async () =>{
         return new Promise((resolve, reject) => {
             const storage = getStorage();
@@ -50,27 +51,40 @@ const UploadSong = ({user}) => {
     }
 
     const uploadImage = async () =>{
+        
         return new Promise((resolve, reject) => {
             const storage = getStorage();
-            const timeStamp = new Date()
-            const storageRef = ref(storage,'images/'+imgFile.name+timeStamp);
-            const uploadTask = uploadBytesResumable(storageRef, imgFile);
-            
-            uploadTask.on('state_changed', 
-            (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log('Upload is ' + progress + '% done');
-            }, 
-            (error) => {
-                reject()
-            }, 
-            () => {
+            if(imgFile){
+                const timeStamp = new Date()
+                const storageRef = ref(storage,'images/'+imgFile.name+timeStamp);
+                const uploadTask = uploadBytesResumable(storageRef, imgFile);
                 
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    resolve(downloadURL)
+                uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                }, 
+                (error) => {
+                    reject()
+                }, 
+                () => {
+                    
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        resolve(downloadURL)
+                    });
+                }
+                );
+            }else{
+                getDownloadURL(ref(storage, 'images/default_playlist_image.png'))
+                .then((url) => {
+                    resolve(url)
+                })
+                .catch((error) => {
+
                 });
+                
             }
-            );
+            
         });
     }
 
@@ -82,7 +96,7 @@ const UploadSong = ({user}) => {
         .then((values)=>{
             urls = values;
         });
-        const checkUser = await getDoc(doc(firestore, "users", user.uid));
+        const checkUser = await getDoc(doc(firestore, "users", userContext.user.uid));
         console.log(checkUser.data());
         const docRef = await addDoc(collection(firestore, "songs"), {
             title: name,
@@ -90,7 +104,7 @@ const UploadSong = ({user}) => {
             audio_url: urls[0],
             image_url: urls[1],
             uploader:{
-                uid: user.uid,
+                uid: userContext.user.uid,
                 name: checkUser.data().display_name
             },
             duration: audioRef.current.duration,

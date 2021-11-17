@@ -1,18 +1,19 @@
 import React, { useContext, useState } from 'react'
 import "./navbarComponent.scss"
 import * as Icons from '@material-ui/icons'
-import { addDoc, collection } from '@firebase/firestore';
+import { addDoc, collection, doc, getDoc } from '@firebase/firestore';
 import firestore from '../../firebase/firestore';
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
-import { PlaylistContext, UserContext } from '../../App';
+import { PlaylistContext, UserContext, PopupContext } from '../../App';
 import {
     Link
   } from "react-router-dom";
+import UploadSong from '../uploadSong/UploadSong'
 
 const NavbarComponent = () => {
     const playlistContext = useContext(PlaylistContext);
     const userContext = useContext(UserContext);
-    
+    const popupContext = useContext(PopupContext);
     const handleCreatePlaylist = async () =>{
         const storage = getStorage();
         var img;
@@ -23,11 +24,16 @@ const NavbarComponent = () => {
         .catch((error) => {
 
         });
+        const user = await getDoc(doc(firestore,'users',userContext.user.uid));
+
         const docRef = await addDoc(collection(firestore, "playlists"), {
             name: "My Playlist #" + (playlistContext.playlists.length+1),
             img_url: img,
             desc: "",
-            uid: userContext.user.uid
+            uploader:{
+                name: user.data().display_name,
+                uid: userContext.user.uid
+            }
         }).then(()=>{
             const newPlaylist = {
                 name:"My Playlist #" + (playlistContext.playlists.length+1),
@@ -39,8 +45,11 @@ const NavbarComponent = () => {
         
     }
 
-    const handleClickPlaylist = (id) =>{
-        // navigate(`/playlist/`+id)
+    const handleUploadSong = () =>{
+        popupContext.setPopup({
+            trigger: true,
+            children: <UploadSong/>
+        })
     }
 
     return (
@@ -67,31 +76,37 @@ const NavbarComponent = () => {
                         </Link>
                         {userContext.user && 
                             <>
-                                <span className="option">
-                                    <Icons.AccessibilityNew/>
-                                    <span>Library</span>
-                                </span>
+                                <Link to={'/library'} className="link">
+                                    <span className="option">
+                                        <Icons.AccessibilityNew/>
+                                        <span>Library</span>
+                                    </span>
+                                </Link>
                                 <span className="option" onClick={handleCreatePlaylist}>
                                     <span>Create playlist</span>
                                 </span>
-                                <div>playlist</div>
-                                <div className='playlist'>
-                                    
-                                    {playlistContext.playlists.map((playlist)=>{
-                                        return(
-                                            <Link to={'playlist/'+playlist.id}>
-                                                <div key={playlist.id}>{playlist.name}</div>
-                                            </Link>
-                                        )
-                                    })}
+                                <span className="option" onClick={handleUploadSong}>
+                                    <span>Upload Song</span>
+                                </span>
+                                <div className="divider"></div>
+                                <div className="bottom"> 
+                    
+                                    <div className='playlist'>
+                                        
+                                        {playlistContext.playlists.map((playlist)=>{
+                                            return(
+                                                <Link to={'playlist/'+playlist.id} className="link">
+                                                    <div key={playlist.id}>{playlist.name}</div>
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
                                 </div>
                             </>
                         }
                     </div>
                 </div>
-                <div className="bottom"> 
-                    
-                </div>
+                
             </div>
         </div>
     )

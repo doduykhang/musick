@@ -1,11 +1,14 @@
 .upload-song {
   display: flex;
   color: white;
+  background-color: black;
+  margin-left: 10px;
   .img-choose {
     display: flex;
     flex-direction: column;
     margin-right: 10px;
     align-items: center;
+    margin-top: 10px;
     img {
       width: 96px;
       height: 96px;
@@ -31,8 +34,8 @@
       background: linear-gradient(
         to right,
         green 0%,
-        green 50%,
-        #fff 50%,
+        green 0%,
+        #fff 0%,
         #fff 100%
       );
       border-radius: 5px;

@@ -4,6 +4,7 @@ import getNewSongs from '../../apis/songs/getNewSongs'
 import "./home.scss"
 import DisplayListComponent from '../../components/displayList/DisplayListComponent'
 import SongListItem from '../../components/songListItem/SongListItem'
+import PopupComponent from '../../components/popup/PopupComponent'
 const Home = () => {
     const [songs, setSongs] = useState([])
     useEffect(async () => {
@@ -33,7 +34,7 @@ const Home = () => {
 
     return (
         <div className="home">
-            <DisplayListComponent header={header}>
+            <DisplayListComponent header={header} onScrollToBottom={()=>{}}>
                 {songs.map(song =>{
                     return (<SongListItem key={song.id} song={song}/>)
                 })}

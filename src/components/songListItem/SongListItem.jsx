@@ -1,13 +1,15 @@
 import React, { useContext, useState } from 'react'
 import "./songListItem.scss"
-import { PlaylistContext, SongContext } from '../../App'
+import { PlaylistContext, PopupContext, SongContext } from '../../App'
 import { doc, setDoc, collection } from '@firebase/firestore'
 import firestore from '../../firebase/firestore'
+import PopupComponent from '../popup/PopupComponent'
+import AddToPlaylistComponent from '../addToPlaylist/AddToPlaylistComponent'
+import SongOperrationComponent from '../songOperation/SongOperrationComponent'
 
-const SongListItem = ({song,forwardRef}) => {
+const SongListItem = ({song,playlistId,onRemoveSong,edit,onDeleteSong}) => {
     const currentSong = useContext(SongContext);
-    const playlistsContext = useContext(PlaylistContext);
-    const [menu, setMenu] = useState(false);
+    const popupContext = useContext(PopupContext);
 
     const formatTime = (value) =>{
         let minute = Math.floor(value / 60);
@@ -36,20 +38,22 @@ const SongListItem = ({song,forwardRef}) => {
     }
 
     const openMenu = () =>{
-        setMenu((prev)=>{return !prev});
-    }
-
-    const handleAddToPlayList = async (playlistId) =>{
-        await setDoc(doc(firestore,'playlists',playlistId,'songs',song.id),{
-            foo:'bar'
+        popupContext.setPopup({
+            trigger:true,
+            children:<SongOperrationComponent 
+                        song={song} 
+                        playlistId={playlistId} 
+                        onRemoveSong={onRemoveSong} 
+                        edit={edit}
+                        onDeleteSong={onDeleteSong}/>
         })
     }
 
     return (
-        <div className="playlistSong" 
-            ref={forwardRef} 
+        <div className="playlistSong"  
             onDoubleClick={playSong} 
             >
+            
             <div className="info-wrapper">
                 <img src={song.image_url} alt="" />
                 <div className="info">
@@ -57,19 +61,9 @@ const SongListItem = ({song,forwardRef}) => {
                 </div>
             </div>
             <div className="album">{song.uploader.name}</div>
-            {/* .toLocaleDateString("en-US") */}
             <div className="date-added">{song.uploaded_date.toDate().toDateString()}</div>
             <div className="duration">{formatTime(song.duration)}</div>
             <div className="menu-toggle" onClick={openMenu}>...</div>
-            {menu && 
-                <div className="menu">
-                    {playlistsContext.playlists.map((playlist)=>{
-                        return (
-                            <div onClick={()=>handleAddToPlayList(playlist.id)}>{playlist.name}</div>
-                        )
-                    })}
-                </div>
-            }
         </div>
     )
 }
